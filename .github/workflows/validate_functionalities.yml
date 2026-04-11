@@ -8,6 +8,8 @@ on: #Quand s'exécute ce workflow ?
     branches:
       - main
       - feat/** #launch workflow, if branch starts by <i>feat</i>
+  workflow_dispatch: {}
+
 
 permissions:
   pull-requests: write
@@ -39,7 +41,7 @@ jobs:
   coverage:
     name: sonar check
     runs-on: ubuntu-latest
-#    needs: test #Tester
+    needs: test #Tester
     permissions:
       pull-requests: write
 

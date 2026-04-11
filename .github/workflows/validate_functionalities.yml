@@ -1,0 +1,39 @@
+name: Basic workflow
+run-name: Build project by ${{ github.actor }}
+on: #Quand s'exécute ce workflow ?
+  pull_request: #branch and path condition must be satisfied
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+      - feat/** #launch workflow, if branch starts by <i>feat</i>
+
+permissions:
+  pull-requests: write
+
+jobs:
+  test:
+    name: building
+    runs-on: ubuntu-latest # Où s'exécute le job ?
+    permissions:
+      pull-requests: write
+
+    steps: # Qu'exécutons-nous ?
+      - uses: actions/checkout@v6
+        id: checkout
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          overwrite-settings: true
+          cache: maven
+
+      - name: Test with maven
+        run: ./mvnw clean verify
+
+

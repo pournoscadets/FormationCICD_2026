@@ -1,0 +1,14 @@
+name: Sonarless Code Scan
+
+description: "test a creation of sonar coverage"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Run Sonarless Scan
+      uses: gitricko/sonarless@v1.3

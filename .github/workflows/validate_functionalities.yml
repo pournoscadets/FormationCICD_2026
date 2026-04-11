@@ -44,6 +44,10 @@ jobs:
       pull-requests: write
 
     steps:
+      - uses: actions/checkout@v6
+        id: checkout
+        with:
+          fetch-depth: 0
       - name: test coverage
         uses: ./.github/actions/sonar
 

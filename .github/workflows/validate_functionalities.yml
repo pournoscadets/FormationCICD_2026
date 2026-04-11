@@ -8,6 +8,8 @@ on: #Quand s'exécute ce workflow ?
     branches:
       - main
       - feat/** #launch workflow, if branch starts by <i>feat</i>
+  workflow_dispatch: {}
+
 
 permissions:
   pull-requests: write
@@ -35,5 +37,20 @@ jobs:
 
       - name: Test with maven
         run: ./mvnw clean verify
+
+  coverage:
+    name: sonar check
+    runs-on: ubuntu-latest
+    needs: test #Tester
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v6
+        id: checkout
+        with:
+          fetch-depth: 0
+      - name: test coverage
+        uses: ./.github/actions/sonar
 
 

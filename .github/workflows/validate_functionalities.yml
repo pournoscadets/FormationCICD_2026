@@ -39,7 +39,7 @@ jobs:
   coverage:
     name: sonar check
     runs-on: ubuntu-latest
-    needs: test #Tester
+#    needs: test #Tester
     permissions:
       pull-requests: write
 

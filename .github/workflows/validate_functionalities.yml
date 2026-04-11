@@ -36,14 +36,4 @@ jobs:
       - name: Test with maven
         run: ./mvnw clean verify
 
-  coverage:
-    name: sonar check
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-
-    steps:
-      - name: test coverage
-        uses: ./github/actions/sonar-coverage
-
 

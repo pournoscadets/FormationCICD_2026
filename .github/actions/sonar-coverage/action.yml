@@ -1,0 +1,19 @@
+name: Sonarless Code Scan
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sonar-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Sonarless Scan
+        uses: gitricko/sonarless@v1.3

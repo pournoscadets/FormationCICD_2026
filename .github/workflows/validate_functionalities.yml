@@ -45,6 +45,6 @@ jobs:
 
     steps:
       - name: test coverage
-        uses: ./.github/actions/sonar-coverage
+        uses: ./.github/actions/sonar
 
 

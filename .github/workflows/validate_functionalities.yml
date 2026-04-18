@@ -58,13 +58,10 @@ jobs:
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PR_NUMBER="${{ github.event.pull_request.number }}"
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-            DATE=$(date +'%Y%m%d%H%M%S')
-
-            # Format: username/repo:pr-number,username/repo:shacommit-date
-            TAGS="${{ vars.DOCKERHUB_USERNAME }}/examemo-back:pr-${PR_NUMBER}"
-            TAGS="${TAGS},${{ vars.DOCKERHUB_USERNAME }}/examemo-back:${SHORT_SHA}-${DATE}"
-
-            echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+            DATE=$(date +'%Y%m%d%H%M%S')            
+          
+            echo "tag1=pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+            echo "tag2=${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
 
           elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
@@ -75,6 +72,9 @@ jobs:
             TAGS="${TAGS},${{ vars.DOCKERHUB_USERNAME }}/examemo-back:latest"
 
             echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+          
+            echo "tag1=main-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
+            echo "tag2=latest" >> $GITHUB_OUTPUT
           fi
 
 #      - name: Set PR tags
@@ -108,13 +108,15 @@ jobs:
 #            type=raw,value=${{ steps.main-tags.outputs.tag1 }},enable=${{ github.ref == 'refs/heads/main' }}
 #            type=raw,value=${{ steps.main-tags.outputs.tag2 }},enable=${{ github.ref == 'refs/heads/main' }}
 
-#      - name: Build and push with timestamp tag
-#        uses: docker/build-push-action@v7
-#        with:
-#          context: .
-#          file: ./Dockerfile
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}
+      - name: Build and push docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ steps.docker-tags.outputs.tag1 }}
+            ${{ steps.docker-tags.outputs.tag2 }}
 
 #  coverage:
 #    name: sonar check

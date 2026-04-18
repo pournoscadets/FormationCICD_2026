@@ -77,10 +77,10 @@ jobs:
         with:
 #          images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.REGISTRY }}
           images: ${{ vars.DOCKERHUB_USERNAME }}/examemo-back
-          tags: |            
-            type=ref,event=pr,prefix=pr-,suffix=
-            type=sha,format=short,prefix={{date 'YYYYMMDDHHmmss'}}-,enable=${{ github.event_name == 'pull_request' }}
-                        
+          tags: |
+            type=ref,event=pr,prefix=pr-
+            type=sha,format=short,enable=${{ github.event_name == 'pull_request' }}
+            
             type=raw,value=main-{{sha}}-{{date 'YYYYMMDDHHmmss'}},enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 

@@ -15,4 +15,9 @@ public class CalculatorController {
     public double sum(@RequestParam double num1, @RequestParam double num2) {
         return calculator.sum(num1, num2);
     }
+
+    @GetMapping("/multiply")
+    public double multiply(@RequestParam double num1, @RequestParam double num2) {
+        return calculator.multiply(num1, num2);
+    }
 }

@@ -8,6 +8,9 @@ on: #Quand s'exécute ce workflow ?
     branches:
       - main
       - feat/** #launch workflow, if branch starts by <i>feat</i>
+  push:
+    branches:
+      - main
   workflow_dispatch: {}
 
 

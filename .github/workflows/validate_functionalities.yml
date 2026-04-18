@@ -52,55 +52,33 @@ jobs:
           driver: docker-container
           platforms: linux/amd64,linux/arm64
 
-      - name: Set Docker tags
-        id: docker-tags
+
+      - name: Set PR tags
+        id: pr-tags
+        if: github.event_name == 'pull_request'
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-            SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-            DATE=$(date +'%Y%m%d%H%M%S')            
-          
-            echo "tag1=${{ vars.DOCKERHUB_USERNAME }}/examemo-back:pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
-            echo "tag2=${{ vars.DOCKERHUB_USERNAME }}/examemo-back:${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
+          PR_NUMBER=$(echo ${{ github.event.pull_request.number }})
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          DATE=$(date +'%Y%m%d%H%M%S')
+          echo "tag1=pr-${PR_NUMBER}-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT         
 
-          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-            DATE=$(date +'%Y%m%d%H%M%S')            
-          
-            echo "tag1=main-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
-            echo "tag2=latest" >> $GITHUB_OUTPUT
-          fi
+      - name: Set main tags
+        id: main-tags
+        if: github.ref == 'refs/heads/main'
+        run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
+          DATE=$(date +'%Y%m%d%H%M%S')
+          echo "tag1=main-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT          
 
-#      - name: Set PR tags
-#        id: pr-tags
-#        if: github.event_name == 'pull_request'
-#        run: |
-#          PR_NUMBER=$(echo ${{ github.event.pull_request.number }})
-#          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-#          DATE=$(date +'%Y%m%d%H%M%S')
-#          echo "tag1=pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
-#          echo "tag2=${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
-#
-#      - name: Set main tags
-#        id: main-tags
-#        if: github.ref == 'refs/heads/main'
-#        run: |
-#          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-#          DATE=$(date +'%Y%m%d%H%M%S')
-#          echo "tag1=main-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
-#          echo "tag2=latest" >> $GITHUB_OUTPUT
-#
-#      - name: Docker meta
-#        id: meta
-#        uses: docker/metadata-action@v6
-#        with:
-#          images: ${{ vars.DOCKERHUB_USERNAME }}/examemo-back
-#          tags: |
-#            type=raw,value=${{ steps.pr-tags.outputs.tag1 }},enable=${{ github.event_name == 'pull_request' }}
-#            type=raw,value=${{ steps.pr-tags.outputs.tag2 }},enable=${{ github.event_name == 'pull_request' }}
-#
-#            type=raw,value=${{ steps.main-tags.outputs.tag1 }},enable=${{ github.ref == 'refs/heads/main' }}
-#            type=raw,value=${{ steps.main-tags.outputs.tag2 }},enable=${{ github.ref == 'refs/heads/main' }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ vars.DOCKERHUB_USERNAME }}/formation
+          tags: |
+            type=raw,value=${{ steps.pr-tags.outputs.tag1 }},enable=${{ github.event_name == 'pull_request' }}            
+
+            type=raw,value=${{ steps.main-tags.outputs.tag1 }},enable=${{ github.ref == 'refs/heads/main' }}            
 
       - name: Build and push docker image
         uses: docker/build-push-action@v7
@@ -108,9 +86,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ steps.docker-tags.outputs.tag1 }}
-            ${{ steps.docker-tags.outputs.tag2 }}
+          tags: ${{ steps.meta.outputs.tags }}
 
 #  coverage:
 #    name: sonar check

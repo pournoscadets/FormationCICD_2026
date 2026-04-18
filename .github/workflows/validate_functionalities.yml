@@ -78,19 +78,21 @@ jobs:
 #          images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.REGISTRY }}
           images: ${{ vars.DOCKERHUB_USERNAME }}/examemo-back
           tags: |
-            type=ref,event=pr,prefix=pr-
-            type=sha,format=short,enable=${{ github.event_name == 'pull_request' }}
+            type=raw,value=${{ steps.pr-tags.outputs.tag1 }},enable=${{ github.event_name == 'pull_request' }}
+            type=raw,value=${{ steps.pr-tags.outputs.tag2 }},enable=${{ github.event_name == 'pull_request' }}
             
-            type=raw,value=main-{{sha}}-{{date 'YYYYMMDDHHmmss'}},enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ steps.main-tags.outputs.tag1 }},enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ steps.main-tags.outputs.tag2 }},enable=${{ github.ref == 'refs/heads/main' }}
+            
+            type=sha,prefix={{branch}}-
 
-      - name: Build and push with timestamp tag
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+#      - name: Build and push with timestamp tag
+#        uses: docker/build-push-action@v7
+#        with:
+#          context: .
+#          file: ./Dockerfile
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
 
 #  coverage:
 #    name: sonar check

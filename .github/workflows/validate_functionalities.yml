@@ -57,7 +57,7 @@ jobs:
         uses: docker/metadata-action@v6
         with:
 #          images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/examemo-back
+          images: ${{ vars.DOCKERHUB_USERNAME }}/examemo-back
           tags: |            
             type=ref,event=pr,prefix=formation-                     
             type=sha

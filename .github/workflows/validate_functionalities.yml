@@ -60,18 +60,12 @@ jobs:
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
             DATE=$(date +'%Y%m%d%H%M%S')            
           
-            echo "tag1=pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
-            echo "tag2=${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
+            echo "tag1=${{ vars.DOCKERHUB_USERNAME }}/examemo-back:pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+            echo "tag2=${{ vars.DOCKERHUB_USERNAME }}/examemo-back:${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
 
           elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
             SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-            DATE=$(date +'%Y%m%d%H%M%S')
-
-            # Format: username/repo:main-shacommit-date,username/repo:latest
-            TAGS="${{ vars.DOCKERHUB_USERNAME }}/examemo-back:main-${SHORT_SHA}-${DATE}"
-            TAGS="${TAGS},${{ vars.DOCKERHUB_USERNAME }}/examemo-back:latest"
-
-            echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+            DATE=$(date +'%Y%m%d%H%M%S')            
           
             echo "tag1=main-${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
             echo "tag2=latest" >> $GITHUB_OUTPUT

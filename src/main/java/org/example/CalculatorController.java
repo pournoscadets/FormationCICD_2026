@@ -18,6 +18,7 @@ public class CalculatorController {
 
     @GetMapping("/multiply")
     public double multiply(@RequestParam double num1, @RequestParam double num2) {
+        // a comment
         return calculator.multiply(num1, num2);
     }
 }

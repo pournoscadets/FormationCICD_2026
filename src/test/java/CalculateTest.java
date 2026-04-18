@@ -8,5 +8,11 @@ public class CalculateTest {
         CalculateImpl calc = new CalculateImpl();
         assertEquals(5.0, calc.sum(2.0, 3.0));
     }
+
+    @Test
+    void testMultiply() {
+        CalculateImpl calc = new CalculateImpl();
+        assertEquals(6.0, calc.multiply(2.0, 3.0));
+    }
 }
 

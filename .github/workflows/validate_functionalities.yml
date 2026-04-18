@@ -56,15 +56,16 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}
+          images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}
           tags: |            
-            type=ref,event=pr,prefix=formation                     
+            type=ref,event=pr,prefix=formation-                     
             type=sha
 
       - name: Build and push with timestamp tag
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
